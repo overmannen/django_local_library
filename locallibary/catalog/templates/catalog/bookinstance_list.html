@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Book Instances</title>
+</head>
+<body>
+    <h1>Book Instances</h1>
+    <ul>
+        {% for bookinstance in object_list %}
+            <li>{{ bookinstance.book.title }}</li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
