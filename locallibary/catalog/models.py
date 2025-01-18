@@ -38,6 +38,27 @@ class Genre(models.Model):
         ]
 
 
+class Language(models.Model):
+    name = models.CharField(
+        max_length=40, help_text="Enter Language", default="English", unique=True
+    )
+
+    def __str__(self):
+        return self.name
+
+    def get_absolute_url(self):
+        return reverse("language-detail", args=[str(self.id)])
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                Lower("name"),
+                name="language_name_case_insensitive_unique",
+                violation_error_message="Language already exists",
+            )
+        ]
+
+
 class Book(models.Model):
     """Model representing a book (but not a specific copy of a book)."""
 
@@ -57,7 +78,7 @@ class Book(models.Model):
         '">ISBN number</a>',
     )
 
-    language = models.ForeignKey("Language", on_delete=models.SET_NULL, null=True)
+    language = models.ForeignKey(Language, on_delete=models.SET_NULL, null=True)
 
     # ManyToManyField used because genre can contain many books. Books can cover many genres.
     # Genre class has already been defined so we can specify the object above.
@@ -87,7 +108,7 @@ class BookInstance(models.Model):
         default=uuid.uuid4,
         help_text="Unique ID for this particular book across whole library",
     )
-    book = models.ForeignKey("Book", on_delete=models.RESTRICT, null=True)
+    book = models.ForeignKey(Book, on_delete=models.RESTRICT, null=True)
     imprint = models.CharField(max_length=200)
     due_back = models.DateField(null=True, blank=True)
 
@@ -143,24 +164,3 @@ class Author(models.Model):
     def __str__(self):
         """String for representing the Model object."""
         return f"{self.last_name}, {self.first_name}"
-
-
-class Language(models.Model):
-    name = models.CharField(
-        max_length=40, help_text="Enter Language", default="English", unique=True
-    )
-
-    def __str__(self):
-        return self.name
-
-    def get_absolute_url(self):
-        return reverse("language-detail", args=[str(self.id)])
-
-    class Meta:
-        constraints = [
-            UniqueConstraint(
-                Lower("name"),
-                name="language_name_case_insensitive_unique",
-                violation_error_message="Language already exists",
-            )
-        ]
