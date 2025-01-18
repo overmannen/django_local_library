@@ -1,0 +1,32 @@
+{% extends "base_generic.html" %}
+
+{% block content %}
+
+<h1>Delete: {{book}}</h1>
+
+{% if book.bookinstance_set.all %}
+    <p>You can't delete this book, there is still copies present </p>
+    <table border="1" style="width: 100%;">
+        <tr>
+            <th>Book name</th>
+            <th>ID</th>
+            <th>Currently borrowed by</th>
+        </tr>
+    {% for instance in book.bookinstance_set.all %}
+    <tr>
+        <td>{{instance.book}}</td>
+        <td>{{instance.id}}</td>
+        <td>{{instance.borrower}}</td>
+        {% endfor %}
+    </tr>
+    </table>
+{% else %}
+    <p>Are you want to delete this book</p>
+    <form action="" method="post">
+        {% csrf_token %}
+        <input type="submit" value="Confirm" action="">
+    </form>
+{% endif %}
+{% endblock content %}
+
+
